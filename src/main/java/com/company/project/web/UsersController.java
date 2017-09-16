@@ -4,18 +4,18 @@ import com.company.project.core.ResultGenerator;
 import com.company.project.model.PobjUsers;
 import com.company.project.model.Users;
 import com.company.project.service.UsersService;
+import com.company.project.utils.FileUploadUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -211,5 +211,11 @@ public class UsersController {
         } else {
             return ResultGenerator.genFailResult("fail");
         }
+    }
+
+    @PostMapping("/testFileUpload")
+    public Result testFileUpload(@RequestParam MultipartFile[] files) {
+        String filePath = FileUploadUtils.saveFile(files[0]);
+        return ResultGenerator.genSuccessResult(filePath);
     }
 }
