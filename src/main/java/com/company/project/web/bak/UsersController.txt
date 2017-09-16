@@ -1,0 +1,142 @@
+package com.company.project.web.bak;
+import com.company.project.core.Result;
+import com.company.project.core.ResultGenerator;
+import com.company.project.model.PobjUsers;
+import com.company.project.model.Users;
+import com.company.project.service.UsersService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Condition;
+
+import javax.annotation.Resource;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+* Created by CodeGenerator on 2017/08/02.
+*/
+@RestController
+@RequestMapping("/users")
+public class UsersController {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private UsersService usersService;
+
+    @PostMapping("/add")
+    public Result add(Users users) {
+        usersService.save(users);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/register")
+    public Result addRetId(Users users) {
+        Users u = new Users();
+        usersService.insertRetId(users);
+        u.setId(users.getId());
+        return ResultGenerator.genSuccessResult(u);
+    }
+
+    @PostMapping("/delete")
+    public Result delete(@RequestParam(defaultValue = "0") String uper,@RequestParam Integer id) {
+        if (uper.equals("ibas0742")) {
+            usersService.deleteById(id);
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestParam(defaultValue = "0") String uper,Users users) {
+        if (uper.equals("ibas0742")) {
+            usersService.update(users);
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+    }
+
+    @PostMapping("/detail")
+    public Result detail(@RequestParam(defaultValue = "") String token,@RequestParam Long id) {
+        String token_ = (String)stringRedisTemplate.opsForHash().get("token",id.toString());
+        if (token.equals(token_)) {
+            Users users = usersService.findById(id.intValue());
+            return ResultGenerator.genSuccessResult(users);
+        } else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+    }
+
+    @PostMapping("/list")
+    public Result list(@RequestParam(defaultValue = "0") String uper,@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        if (uper.equals("ibas0742")) {
+            PageHelper.startPage(page, size);
+            List<Users> list = usersService.findAll();
+            PageInfo pageInfo = new PageInfo(list);
+            return ResultGenerator.genSuccessResult(pageInfo);
+        } else {
+            return ResultGenerator.genFailResult("没有操作权限");
+        }
+    }
+
+    //根据条件进行查找 ex => data : { id : 12 }
+    @PostMapping("/listBy")
+    public Result listBy(@RequestParam Map<String,String> cond,
+                         @RequestParam(defaultValue = "0") Integer page,
+                         @RequestParam(defaultValue = "0") Integer size) {
+        Condition condition = new Condition(Users.class);
+        Iterator<String> keys = cond.keySet().iterator();
+        boolean isOk = false;
+        while (keys.hasNext()) {
+            String k = keys.next();
+            if (k.equals("page") || k.equals("size")) {
+                continue;
+            }
+            if (k.equals("uper")) {
+                if (cond.get(k).equals("ibas0742")) {
+                    isOk = true;
+                }
+                continue;
+            }
+            condition.createCriteria().andEqualTo(k,cond.get(k));
+        }
+        if (isOk) {
+            PageHelper.startPage(page, size);
+            List<Users> list = usersService.findByCondition(condition);
+            PageInfo pageInfo = new PageInfo(list);
+            return ResultGenerator.genSuccessResult(pageInfo);
+        } else {
+            return ResultGenerator.genFailResult("没有操作权限");
+        }
+    }
+    //根据条件进行查找 ex => data : { id : 12 }
+    @PostMapping("/login")
+    public Result login(@RequestParam String nickName,@RequestParam String password) {
+        Condition condition = new Condition(Users.class);
+        condition.createCriteria().andEqualTo("nickname",nickName);
+        condition.createCriteria().andEqualTo("password",password);
+        List<Users> list = usersService.findByCondition(condition);
+        PobjUsers pobjUsers = new PobjUsers();
+        if (list.size() == 1) {
+            //登陆成功
+            //ShiroToken token = (ShiroToken) authcToken;
+            pobjUsers.setUsers(list.get(0));
+            pobjUsers.setToken(UUID.randomUUID().toString());
+            stringRedisTemplate.opsForHash().put("token",pobjUsers.getUsers().getId().toString(),pobjUsers.getToken());
+            pobjUsers.getUsers().setPassword("");
+            return ResultGenerator.genSuccessResult(pobjUsers);
+        } else {
+            //登陆失败
+            return ResultGenerator.genFailResult("昵称或密码错误！");
+        }
+    }
+}

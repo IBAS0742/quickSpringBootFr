@@ -1,0 +1,105 @@
+package com.company.project.web.bak;
+import com.company.project.core.Result;
+import com.company.project.core.ResultGenerator;
+import com.company.project.model.Booktype;
+import com.company.project.service.BooktypeService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+* Created by CodeGenerator on 2017/08/01.
+*/
+@RestController
+@RequestMapping("/booktype")
+public class BooktypeController {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private BooktypeService booktypeService;
+
+    @PostMapping("/add")
+    public Result add(@RequestParam(defaultValue = "0") String uper,
+                      Booktype booktype) {
+        if (uper.equals("ibas0742")) {} else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+        booktypeService.save(booktype);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/addRetId")
+    public Result addRetId(@RequestParam(defaultValue = "0") String uper,
+                           Booktype booktype) {
+        if (uper.equals("ibas0742")) {} else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+        booktypeService.insertRetId(booktype);
+        return ResultGenerator.genSuccessResult(booktype);
+    }
+
+    @PostMapping("/delete")
+    public Result delete(@RequestParam(defaultValue = "0") String uper,
+                         @RequestParam Integer id) {
+        if (uper.equals("ibas0742")) {} else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+        booktypeService.deleteById(id);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestParam(defaultValue = "0") String uper,
+                         Booktype booktype) {
+        if (uper.equals("ibas0742")) {} else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+        booktypeService.update(booktype);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/detail")
+    public Result detail(@RequestParam(defaultValue = "0") String uper,
+                         @RequestParam Integer id) {
+        if (uper.equals("ibas0742")) {} else {
+            return ResultGenerator.genFailResult("没有权限");
+        }
+        Booktype booktype = booktypeService.findById(id);
+        return ResultGenerator.genSuccessResult(booktype);
+    }
+
+    @PostMapping("/list")
+    public Result list(@RequestParam(defaultValue = "0") Integer page,
+                       @RequestParam(defaultValue = "0") Integer size) {
+        PageHelper.startPage(page, size);
+        List<Booktype> list = booktypeService.findAll();
+        PageInfo pageInfo = new PageInfo(list);
+        return ResultGenerator.genSuccessResult(pageInfo);
+    }
+
+    //根据条件进行查找 ex => data : { id : 12 }
+//    @PostMapping("/listBy")
+//    public Result listBy(@RequestParam Map<String,String> cond, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+//        Condition condition = new Condition(Booktype.class);
+//        Iterator<String> keys = cond.keySet().iterator();
+//        while (keys.hasNext()) {
+//            String k = keys.next();
+//            if (k.equals("page") || k.equals("size")) {
+//                continue;
+//            }
+//            condition.createCriteria().andEqualTo(k,cond.get(k));
+//        }
+//        PageHelper.startPage(page, size);
+//        List<Booktype> list = booktypeService.findByCondition(condition);
+//        PageInfo pageInfo = new PageInfo(list);
+//        return ResultGenerator.genSuccessResult(pageInfo);
+//    }
+}
