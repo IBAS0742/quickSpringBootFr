@@ -1,11 +1,11 @@
 # quickSpringBootFr
 
-##1.整体使用方法
-###1.使用逆向工程建立数据库和实体的对应
+## 1.整体使用方法
+### 1.使用逆向工程建立数据库和实体的对应
 修改test/java/com.company.project.core.ProjectConstant中的数据库名称、用户、密码、表明名即可。
 
-###2.增加数据库操作方法
-####1.添加所有实体的方法可以在com.company.project.core.Mapper中添加通用的方法
+### 2.增加数据库操作方法
+#### 1.添加所有实体的方法可以在com.company.project.core.Mapper中添加通用的方法
 ```java
 public void insertRetId(T t)
 ```
@@ -26,7 +26,7 @@ public void insertRetId(T t) { mapper.insertRetId(t);}
     INSERT INTO users(nickName,password,score,gender,msgMethod,imgUrl) VALUES(#{nickname},#{password},#{score},#{gender},#{msgmethod},#{imgurl})
   </insert>
 ```
-####2.单独一个实体的方法可以在对应的mapper（在com.company.project.dao中的）文件中添加
+#### 2.单独一个实体的方法可以在对应的mapper（在com.company.project.dao中的）文件中添加
 ```java
 public int totalUsers();
 ```
@@ -48,9 +48,9 @@ public int totalUsers() {
 }
 ```
 
-##2.接口页面的使用
-###1.com.company.project.web.HomeController的目的只是实现重定向，希望不要删除
-###2.添加api接口，可以到com.company.project.configurer.SwaggerConfig
+## 2.接口页面的使用
+### 1.com.company.project.web.HomeController的目的只是实现重定向，希望不要删除
+### 2.添加api接口，可以到com.company.project.configurer.SwaggerConfig
 ```java
     public Docket testApi() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -73,9 +73,9 @@ public int totalUsers() {
     }
 ```
 
-##3.Redis使用
-###1.置请修改 redis.properties 文件，
-###2.使用redis，这里的usersController类给了一个使用实例
+## 3.Redis使用
+### 1.置请修改 redis.properties 文件，
+### 2.使用redis，这里的usersController类给了一个使用实例
 ```java
 public class UsersController {
     @Autowired
@@ -92,5 +92,5 @@ public class UsersController {
 }
 ```
 
-##4.使用扩展(未开始编写)
-###1.
+## 4.使用扩展(未开始编写)
+### 1.
