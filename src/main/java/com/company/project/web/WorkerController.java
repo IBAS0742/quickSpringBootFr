@@ -1,8 +1,8 @@
-package ${basePackage}.web;
-import ${basePackage}.core.Result;
-import ${basePackage}.core.ResultGenerator;
-import ${basePackage}.model.${modelNameUpperCamel};
-import ${basePackage}.service.${modelNameUpperCamel}Service;
+package com.company.project.web;
+import com.company.project.core.Result;
+import com.company.project.core.ResultGenerator;
+import com.company.project.model.Worker;
+import com.company.project.service.WorkerService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,43 +18,43 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
-* Created by ${author} on ${date}.
+* Created by CodeGenerator on 2017/09/22.
 */
 @RestController
-@RequestMapping("${baseRequestMapping}")
-public class ${modelNameUpperCamel}Controller {
+@RequestMapping("/worker")
+public class WorkerController {
     @Resource
-    private ${modelNameUpperCamel}Service ${modelNameLowerCamel}Service;
+    private WorkerService workerService;
 
     @PostMapping("/add")
-    public Result add(${modelNameUpperCamel} ${modelNameLowerCamel}) {
-        ${modelNameLowerCamel}.setId(UUID.randomUUID().toString());
-        ${modelNameLowerCamel}Service.save(${modelNameLowerCamel});
-        return ResultGenerator.genSuccessResult(${modelNameLowerCamel});
+    public Result add(Worker worker) {
+        worker.setId(UUID.randomUUID().toString());
+        workerService.save(worker);
+        return ResultGenerator.genSuccessResult(worker);
     }
 
     @PostMapping("/delete")
     public Result delete(@RequestParam String id) {
-        ${modelNameLowerCamel}Service.deleteById(id);
+        workerService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/update")
-    public Result update(${modelNameUpperCamel} ${modelNameLowerCamel}) {
-        ${modelNameLowerCamel}Service.update(${modelNameLowerCamel});
+    public Result update(Worker worker) {
+        workerService.update(worker);
         return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/detail")
     public Result detail(@RequestParam String id) {
-        ${modelNameUpperCamel} ${modelNameLowerCamel} = ${modelNameLowerCamel}Service.findById(id);
-        return ResultGenerator.genSuccessResult(${modelNameLowerCamel});
+        Worker worker = workerService.findById(id);
+        return ResultGenerator.genSuccessResult(worker);
     }
 
     @PostMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<${modelNameUpperCamel}> list = ${modelNameLowerCamel}Service.findAll();
+        List<Worker> list = workerService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
@@ -62,7 +62,7 @@ public class ${modelNameUpperCamel}Controller {
     //根据条件进行查找 ex => data : { id : 12 }
     @PostMapping("/listBy")
     public Result listBy(@RequestParam Map<String,String> cond, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        Condition condition = new Condition(${modelNameUpperCamel}.class);
+        Condition condition = new Condition(Worker.class);
         Iterator<String> keys = cond.keySet().iterator();
         while (keys.hasNext()) {
             String k = keys.next();
@@ -72,7 +72,7 @@ public class ${modelNameUpperCamel}Controller {
             condition.createCriteria().andEqualTo(k,cond.get(k));
         }
         PageHelper.startPage(page, size);
-        List<${modelNameUpperCamel}> list = ${modelNameLowerCamel}Service.findByCondition(condition);
+        List<Worker> list = workerService.findByCondition(condition);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }

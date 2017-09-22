@@ -18,9 +18,9 @@ import static com.company.project.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/数据库名称";
-    private static final String JDBC_USERNAME = "用户名";
-    private static final String JDBC_PASSWORD = "密码";
+    private static final String JDBC_URL = "jdbc:mysql://119.29.22.46:3306/ljsoa";
+    private static final String JDBC_USERNAME = "root";
+    private static final String JDBC_PASSWORD = "346143551hy";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
     private static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径
@@ -37,7 +37,7 @@ public class CodeGenerator {
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());//@date
 
     public static void main(String[] args) {
-        genCode("数据库表名");
+        genCode("company");
         //genCode("输入表名","输入自定义Model名称");
     }
 
@@ -63,7 +63,6 @@ public class CodeGenerator {
         genService(tableName, modelName);
         genController(tableName, modelName);
     }
-
 
     public static void genModelAndMapper(String tableName, String modelName) {
         Context context = new Context(ModelType.FLAT);
@@ -220,5 +219,4 @@ public class CodeGenerator {
     private static String packageConvertPath(String packageName) {
         return String.format("/%s/", packageName.contains(".") ? packageName.replaceAll("\\.", "/") : packageName);
     }
-
 }

@@ -1,6 +1,7 @@
 package com.company.project.core;
 
 
+import io.swagger.models.auth.In;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Condition;
@@ -34,7 +35,7 @@ public abstract class AbstractService<T> implements Service<T> {
 
     public void insertRetId(T t) { mapper.insertRetId(t);}
 
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         mapper.deleteByPrimaryKey(id);
     }
 
@@ -48,7 +49,7 @@ public abstract class AbstractService<T> implements Service<T> {
         mapper.updateByPrimaryKeySelective(model);
     }
 
-    public T findById(Long id) {
+    public T findById(String id) {
         return mapper.selectByPrimaryKey(id);
     }
 

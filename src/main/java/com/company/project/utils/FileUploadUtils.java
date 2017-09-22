@@ -28,9 +28,9 @@ public class FileUploadUtils {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            filePath = "";
+            path = "";
         } catch (IOException e) {
-            filePath = "";
+            path = "";
             e.printStackTrace();
         } finally {
             try {

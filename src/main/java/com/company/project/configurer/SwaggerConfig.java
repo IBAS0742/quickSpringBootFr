@@ -59,27 +59,17 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter {
                 .select()
                 .paths(
                         or(
-                            regex("/users/.*")
+                                regex("/company/.*"),
+                                regex("/department/.*"),
+                                regex("/workcontact/.*"),
+                                regex("/worker/.*"),
+                                regex("/workevent/.*")
                         )
                 )//过滤的接口
                 .build()
                 .apiInfo(testApiInfo());
     }
 
-//    @Bean
-//    public Docket demoApi() {
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .groupName("demo")
-//                .genericModelSubstitutes(DeferredResult.class)
-////              .genericModelSubstitutes(ResponseEntity.class)
-//                .useDefaultResponseMessages(false)
-//                .forCodeGeneration(false)
-//                .pathMapping("/")
-//                .select()
-//                .paths(or(regex("/Users/.*")))//过滤的接口
-//                .build()
-//                .apiInfo(demoApiInfo());
-//    }
 
     private ApiInfo testApiInfo() {
         return new ApiInfoBuilder()
