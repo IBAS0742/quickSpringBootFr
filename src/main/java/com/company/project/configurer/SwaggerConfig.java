@@ -59,11 +59,8 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter {
                 .select()
                 .paths(
                         or(
-                                regex("/company/.*"),
-                                regex("/department/.*"),
-                                regex("/workcontact/.*"),
-                                regex("/worker/.*"),
-                                regex("/workevent/.*")
+                                regex("/config/.*"),
+                                regex("/task/.*")
                         )
                 )//过滤的接口
                 .build()

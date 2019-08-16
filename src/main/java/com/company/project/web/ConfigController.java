@@ -1,8 +1,8 @@
 package com.company.project.web;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
-import com.company.project.model.Company;
-import com.company.project.service.CompanyService;
+import com.company.project.model.Config;
+import com.company.project.service.ConfigService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,43 +18,43 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
-* Created by CodeGenerator on 2017/09/22.
+* Created by CodeGenerator on 2019/08/16.
 */
 @RestController
-@RequestMapping("/company")
-public class CompanyController {
+@RequestMapping("/config")
+public class ConfigController {
     @Resource
-    private CompanyService companyService;
+    private ConfigService configService;
 
     @PostMapping("/add")
-    public Result add(Company company) {
-        company.setId(UUID.randomUUID().toString());
-        companyService.save(company);
-        return ResultGenerator.genSuccessResult(company);
+    public Result add(Config config) {
+        config.setId(UUID.randomUUID().toString());
+        configService.save(config);
+        return ResultGenerator.genSuccessResult(config);
     }
 
     @PostMapping("/delete")
     public Result delete(@RequestParam String id) {
-        companyService.deleteById(id);
+        configService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/update")
-    public Result update(Company company) {
-        companyService.update(company);
+    public Result update(Config config) {
+        configService.update(config);
         return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/detail")
     public Result detail(@RequestParam String id) {
-        Company company = companyService.findById(id);
-        return ResultGenerator.genSuccessResult(company);
+        Config config = configService.findById(id);
+        return ResultGenerator.genSuccessResult(config);
     }
 
     @PostMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<Company> list = companyService.findAll();
+        List<Config> list = configService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
@@ -62,7 +62,7 @@ public class CompanyController {
     //根据条件进行查找 ex => data : { id : 12 }
     @PostMapping("/listBy")
     public Result listBy(@RequestParam Map<String,String> cond, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        Condition condition = new Condition(Company.class);
+        Condition condition = new Condition(Config.class);
         Iterator<String> keys = cond.keySet().iterator();
         while (keys.hasNext()) {
             String k = keys.next();
@@ -72,7 +72,7 @@ public class CompanyController {
             condition.createCriteria().andEqualTo(k,cond.get(k));
         }
         PageHelper.startPage(page, size);
-        List<Company> list = companyService.findByCondition(condition);
+        List<Config> list = configService.findByCondition(condition);
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }

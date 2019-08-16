@@ -5,9 +5,7 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -18,10 +16,10 @@ import static com.company.project.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://***.***.***.***:****/****";
-    private static final String JDBC_USERNAME = "????????";
-    private static final String JDBC_PASSWORD = "???????????";
-    private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+    private static String JDBC_URL;
+    private static String JDBC_USERNAME;
+    private static String JDBC_PASSWORD;
+    private static String JDBC_DIVER_CLASS_NAME;
 
     private static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径
     private static final String TEMPLATE_FILE_PATH = PROJECT_PATH + "/src/test/resources/generator/template";//模板位置
@@ -37,8 +35,34 @@ public class CodeGenerator {
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());//@date
 
     public static void main(String[] args) {
-        genCode("company");
+        preSet();
+        genCode("config");
         //genCode("输入表名","输入自定义Model名称");
+    }
+
+    public static void preSet() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(System.getProperty("user.dir"));
+        sb.append("\\src");
+        sb.append("\\main");
+        sb.append("\\resources");
+        sb.append("\\application-dev.properties");
+
+        Properties properties = new Properties();
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(sb.toString()));
+            properties.load(bufferedReader);
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JDBC_URL = properties.getProperty("spring.datasource.url");
+        JDBC_USERNAME = properties.getProperty("spring.datasource.username");
+        JDBC_PASSWORD = properties.getProperty("spring.datasource.password");
+        JDBC_DIVER_CLASS_NAME = properties.getProperty("spring.datasource.driver-class-name");
     }
 
     /**
